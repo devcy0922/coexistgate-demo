@@ -1,0 +1,22 @@
+name: CoexistGate / Release Safety
+on:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  release-safety:
+    name: CoexistGate / Release Safety
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install CoexistGate
+        run: |
+          curl -fsSL -o coexistgate "https://github.com/devcy0922/coexistgate/releases/download/v0.1.0/coexistgate-x86_64-unknown-linux-musl"
+          curl -fsSL -o SHA256SUMS "https://github.com/devcy0922/coexistgate/releases/download/v0.1.0/SHA256SUMS"
+          expected=$(awk '/coexistgate-x86_64-unknown-linux-musl$/{print $1}' SHA256SUMS)
+          echo "$expected  coexistgate" | sha256sum -c -
+          chmod +x coexistgate
+      - name: Analyze
+        run: ./coexistgate analyze . --base "origin/${{ github.base_ref }}" --fail-on high
