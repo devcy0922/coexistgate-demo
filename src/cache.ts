@@ -1,5 +1,5 @@
 export function cacheUrl(): string {
-  const url = process.env.REDIS_URL;
-  if (!url) throw new Error("REDIS_URL required");
+  const url = process.env.CACHE_URL;
+  if (!url) throw new Error("CACHE_URL required");
   return url;
 }
